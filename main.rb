@@ -1,3 +1,4 @@
+require 'rubygems'
 require 'sinatra'
 require 'sequel'
 
@@ -45,11 +46,8 @@ get '/graphs/:id/amstock_settings.xml' do
 	erb :amstock_settings, :locals => { :id => params[:id] }, :layout=>false
 end
 
-get '/graphs/:id.csv' do
-	Points.data.filter(:graph => params[:id]).reverse_order(:timestamp).to_csv
-end
-
 get '/graphs/:id/data.csv' do
+  content_type 'text/csv'
 	erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }, :layout=>false
 end
 
