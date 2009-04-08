@@ -1,0 +1,6 @@
+<table border="0" cellspacing="5" cellpadding="5">
+  <tr><th>name</th></tr>
+  <% graphs.each do |graph|%>
+    <tr><td><a href="/graphs/<%= graph[:graph] %>"><%= graph[:graph] %></a></td></tr>
+  <%end%>
+</table>

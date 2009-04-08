@@ -2,14 +2,19 @@ require 'sinatra'
 require 'sequel'
 
 module Points
+  DB = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://rifgraf.db')
+  
 	def self.data
 		@@data ||= make
 	end
 
+  def self.graphs
+    DB[" SELECT DISTINCT(graph) FROM points"]    
+  end
+
 	def self.make
-		db = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://rifgraf.db')
-		make_table(db)
-		db[:points]
+		make_table(DB)
+		DB[:points]
 	end
 
 	def self.make_table(db)
@@ -27,17 +32,25 @@ get '/' do
 	erb :about
 end
 
+get '/graphs' do
+  erb :graphs, :locals => {:graphs => Points.graphs.all}
+end
+
 get '/graphs/:id' do
 	throw :halt, [ 404, "No such graph" ] unless Points.data.filter(:graph => params[:id]).count > 0
-	erb :graph, :locals => { :id => params[:id] }
+	erb :graph, :locals => { :id => params[:id] }, :layout=>false
 end
 
 get '/graphs/:id/amstock_settings.xml' do
-	erb :amstock_settings, :locals => { :id => params[:id] }
+	erb :amstock_settings, :locals => { :id => params[:id] }, :layout=>false
+end
+
+get '/graphs/:id.csv' do
+	Points.data.filter(:graph => params[:id]).reverse_order(:timestamp).to_csv
 end
 
 get '/graphs/:id/data.csv' do
-	erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }
+	erb :data, :locals => { :points => Points.data.filter(:graph => params[:id]).reverse_order(:timestamp) }, :layout=>false
 end
 
 post '/graphs/:id' do
