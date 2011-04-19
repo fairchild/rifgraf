@@ -2,6 +2,7 @@ require 'rubygems'
 require 'sinatra'
 require 'sequel'
 
+
 module Points
   DB = Sequel.connect(ENV['DATABASE_URL'] || 'sqlite://rifgraf.db')
   
@@ -28,6 +29,7 @@ module Points
 		# assume table already exists
 	end
 end
+
 
 get '/' do
 	erb :about
