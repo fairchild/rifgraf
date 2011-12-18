@@ -1,4 +1,4 @@
-this is an application to receive numbers, store them to a simeseries, and display a graph of the timeseries
+this is an application to receive numbers, store them to a time series, and display a graph of the time series
 
 # Running locally
 
